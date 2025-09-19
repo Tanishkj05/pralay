@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PRALAY - Disaster Early Warning System</title>
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+  <style>
+    :root {
+      --primary-dark-blue: #20398a;
+      --secondary-blue: #1e4587;
+      --accent-blue: #034078;
+      --alert-orange: #FF7F11;
+      --light-gray: #F5F5F5;
+      --text-color-dark: #333;
+      --text-color-light: #EEE;
+    }
+
+    /* General Styles */
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: var(--light-gray);
+      color: var(--text-color-dark);
+      line-height: 1.6;
+    }
+
+    a {
+      text-decoration: none;
+      color: var(--accent-blue);
+      transition: color 0.3s ease;
+    }
+
+    a:hover {
+      color: var(--primary-dark-blue);
+    }
+
+    /* Top Bar */
+    .top-bar {
+      background: var(--primary-dark-blue);
+      color: var(--text-color-light);
+      padding: 10px 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    .top-bar .left-content,
+    .top-bar .right-content {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .top-bar a {
+      color: var(--light-gray);
+      margin: 0;
+      padding: 5px 8px;
+      border-radius: 4px;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    .top-bar a:hover {
+      color: white;
+      background: var(--accent-blue);
+    }
+
+    #dateTime {
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Language Dropdown */
+    .language-selector {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .language-selector label {
+      font-size: 16px;
+      color: var(--light-gray);
+    }
+
+    .language-selector select {
+      padding: 5px 8px;
+      border-radius: 5px;
+      border: 1px solid var(--accent-blue);
+      font-size: 13px;
+      background: var(--accent-blue);
+      color: white;
+      font-weight: 500;
+      cursor: pointer;
+      appearance: none; /* Remove default arrow */
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2012%2012%22%3E%3Cpath%20fill%3D%22white%22%20d%3D%22M10.293%203.293L6%207.586L1.707%203.293A1%201%200%2000.293%204.707L5.293%209.707A1%201%200%20006%2010.414L6.707%209.707L11.707%204.707A1%201%200%200010.293%203.293Z%22%2F%3E%3C%2Fsvg%3E");
+      background-repeat: no-repeat;
+      background-position: right 8px center;
+      padding-right: 25px; /* Make space for the arrow */
+    }
+
+    .language-selector select:focus {
+      outline: none;
+      border-color: var(--alert-orange);
+      box-shadow: 0 0 0 2px rgba(255,127,17,0.3);
+    }
+
+    /* Header */
+    header {
+      text-align: center;
+      padding: 25px 20px;
+      background: white;
+      border-bottom: 3px solid var(--accent-blue);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    header .logo-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 10px;
+    }
+
+    header img {
+      height: 80px; /* Adjusted size */
+      margin-right: 15px; /* Space between logo and text */
+    }
+
+    header h1 {
+      margin: 0;
+      color: var(--primary-dark-blue);
+      font-size: 28px; /* Larger title */
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    header h1 span {
+      color: var(--accent-blue);
+    }
+
+    header h3 {
+      margin: 8px 0 0;
+      font-size: 16px;
+      color: #666;
+      font-weight: 400;
+    }
+
+    /* Navigation */
+    nav {
+      background: var(--secondary-blue);
+      text-align: center;
+      padding: 15px 0;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    nav a {
+      color: var(--light-gray);
+      text-decoration: none;
+      margin: 0 18px;
+      font-weight: 600;
+      transition: color 0.3s ease, background 0.3s ease, transform 0.2s ease;
+      padding: 10px 18px;
+      border-radius: 6px;
+      position: relative;
+    }
+
+    nav a:hover, nav a.active {
+      background: var(--accent-blue);
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    nav a.active::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 8px solid transparent;
+      border-right: 8px solid transparent;
+      border-bottom: 8px solid var(--accent-blue); /* Triangle pointer */
+      opacity: 0.8;
+    }
+
+    /* Map Section */
+    #map {
+      height: calc(100vh - 250px); /* Adjusted height to accommodate new header/nav */
+      width: 100%;
+      border-top: 2px solid var(--accent-blue);
+      box-shadow: inset 0 3px 10px rgba(0,0,0,0.1);
+    }
+
+    /* Popup Content */
+    .leaflet-popup-content-wrapper {
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        background: white;
+    }
+
+    .leaflet-popup-content {
+      text-align: center;
+      padding: 10px;
+      font-size: 14px;
+      color: var(--text-color-dark);
+    }
+
+    .leaflet-popup-content h4 {
+      margin-top: 0;
+      margin-bottom: 10px;
+      color: var(--primary-dark-blue);
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .leaflet-popup-content p {
+        margin: 5px 0;
+    }
+
+    .leaflet-popup-content img, 
+    .leaflet-popup-content video {
+      max-width: 250px;
+      height: auto; /* Ensure aspect ratio */
+      border-radius: 8px;
+      margin-top: 10px;
+      border: 1px solid #DDD;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .popup-description {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #555;
+    }
+    
+    .leaflet-popup-close-button {
+      color: var(--primary-dark-blue) !important;
+      font-size: 24px !important;
+      font-weight: bold !important;
+      padding: 0 5px 0 0 !important;
+    }
+
+    /* Footer */
+    footer {
+      background: var(--primary-dark-blue);
+      color: var(--text-color-light);
+      text-align: center;
+      padding: 20px;
+      font-size: 13px;
+      box-shadow: 0 -2px 8px rgba(0,0,0,0.3);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+    }
+
+    footer a {
+      color: var(--light-gray);
+      margin: 0 8px;
+      transition: color 0.3s ease;
+    }
+
+    footer a:hover {
+      color: var(--alert-orange);
+      text-decoration: underline;
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+      nav a {
+        margin: 0 10px;
+        padding: 8px 12px;
+        font-size: 13px;
+      }
+      header h1 {
+        font-size: 24px;
+      }
+      header h3 {
+        font-size: 14px;
+      }
+      .top-bar {
+        font-size: 12px;
+        padding: 8px 15px;
+      }
+      .top-bar .left-content,
+      .top-bar .right-content {
+        gap: 10px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .top-bar {
+        flex-direction: column;
+        gap: 10px;
+        padding: 10px 15px;
+      }
+      .top-bar .right-content {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      header h1 {
+        font-size: 22px;
+      }
+      nav {
+        padding: 10px 0;
+      }
+      nav a {
+        display: block; /* Stack links on mobile */
+        margin: 8px auto;
+        padding: 8px 15px;
+        width: fit-content;
+      }
+      nav a.active::after {
+        border-bottom: 6px solid var(--accent-blue);
+        bottom: -6px;
+      }
+      #map {
+        height: calc(100vh - 320px); /* Adjust height for smaller screens */
+      }
+      header img {
+        height: 50px;
+        margin-right: 10px;
+      }
+      footer {
+        flex-direction: column;
+        padding: 15px;
+        gap: 10px;
+      }
+      footer a {
+        margin: 0;
+      }
+    }
+
+    @media (max-width: 480px) {
+      header h1 {
+        font-size: 18px;
+        flex-direction: column;
+        gap: 5px;
+      }
+      header .logo-container {
+        flex-direction: column;
+      }
+      header img {
+        margin-right: 0;
+        margin-bottom: 10px;
+      }
+      header h3 {
+        font-size: 13px;
+      }
+      .language-selector select {
+        font-size: 12px;
+        padding: 4px 20px 4px 6px;
+      }
+      .leaflet-popup-content img, 
+      .leaflet-popup-content video {
+        max-width: 180px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="top-bar">
+    <div class="left-content">
+      <div id="dateTime"><i class="far fa-clock"></i> Loading time...</div>
+    </div>
+    <div class="right-content">
+      <a href="about.html" data-translate="about">About Us</a>
+      <a href="user-login.html" data-translate="login">Login</a>
+      <div class="language-selector">
+        <label for="language"><i class="fas fa-globe"></i></label>
+        <select id="language" name="language" onchange="changeLanguage(this.value)">
+          <option value="en">English</option>
+          <option value="hi">हिन्दी</option>
+          <option value="gu">ગુજરાતી</option>
+          <option value="mr">मराठी</option>
+          <option value="bn">বাংলা</option>
+          <option value="or">ଓଡ଼ିଆ</option>
+          <option value="ta">தமிழ்</option>
+          <option value="te">తెలుగు</option>
+          <option value="kn">ಕನ್ನಡ</option>
+          <option value="ml">മലയാളം</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <header>
+    <div class="logo-container">
+      <img src="logo.png" alt="PRALAY Logo"> <h1>PRALAY - <span data-translate="title">Indian Ocean Disaster Early Warning System</span></h1>
+    </div>
+    <h3 data-translate="subtitle">Ministry of Earth Sciences - Government of India</h3>
+  </header>
+
+  <nav>
+    <a href="#" class="active" data-translate="home">Home</a>
+    <a href="#" data-translate="monitoring">Real-Time Data Monitoring</a>
+    <a href="#" data-translate="events">Disaster Events</a>
+    <a href="#" data-translate="surge">Storm Surge</a>
+    <a href="#" data-translate="knowledge">Knowledge Bank</a>
+    <a href="#" data-translate="ready">Disaster Ready</a>
+    <a href="media/media-upload.html" data-translate="media">Media Upload</a>
+  </nav>
+
+  <div id="map"></div>
+
+  <footer>
+    <span>&copy; 2025 PRALAY. <span data-translate="rights">All rights reserved.</span></span>
+    <div>
+      <a href="#" data-translate="privacy">Privacy Policy</a> |
+      <a href="#" data-translate="terms">Terms of Service</a>
+    </div>
+  </footer>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+  <script>
+    // Initialize Map - Center on Chennai
+    const map = L.map('map').setView([13.0827, 80.2707], 8);
+
+    // Add OpenStreetMap Tile Layer
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Load hazard reports from localStorage
+    function loadHazards() {
+      const hazardData = JSON.parse(localStorage.getItem('hazardReports')) || [];
+
+      hazardData.forEach(hazard => {
+        const popupContent = `
+          <div class="popup-content">
+            <h4>Hazard Report</h4>
+            <p><strong>Time:</strong> ${hazard.timestamp}</p>
+            <div class="popup-description">${hazard.description}</div>
+            ${
+              hazard.mediaType === 'image'
+                ? `<img src="${hazard.mediaURL}" alt="Hazard Photo" />`
+                : `<video src="${hazard.mediaURL}" controls></video>`
+            }
+          </div>
+        `;
+
+        L.marker([hazard.latitude, hazard.longitude])
+          .addTo(map)
+          .bindPopup(popupContent);
+      });
+    }
+
+    // Load hazards on page load
+    loadHazards();
+  </script>
+
+  <script>
+    function updateIndianTime() {
+      const options = {
+        timeZone: 'Asia/Kolkata',
+        weekday: 'short',
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
+      };
+
+      const now = new Date();
+      const indianTime = now.toLocaleString('en-IN', options);
+      document.getElementById('dateTime').innerHTML = `<i class="far fa-clock"></i> ${indianTime} IST`;
+    }
+
+    setInterval(updateIndianTime, 1000);
+    updateIndianTime();
+  </script>
+
+  <script>
+    const translations = {
+      en: {
+        about: "About Us",
+        login: "Login",
+        title: "Indian Ocean Disaster Early Warning System",
+        subtitle: "Ministry of Earth Sciences - Government of India",
+        home: "Home",
+        monitoring: "Real-Time Data Monitoring",
+        events: "Disaster Events",
+        surge: "Storm Surge",
+        knowledge: "Knowledge Bank",
+        ready: "Disaster Ready",
+        rights: "All rights reserved.",
+        privacy: "Privacy Policy",
+        terms: "Terms of Service",
+        media: "Media Upload"
+      },
+      hi: {
+        about: "हमारे बारे में",
+        login: "लॉगिन",
+        title: "भारतीय महासागर आपदा शीघ्र चेतावनी प्रणाली",
+        subtitle: "पृथ्वी विज्ञान मंत्रालय - भारत सरकार",
+        home: "होम",
+        monitoring: "रीयल-टाइम डेटा मॉनिटरिंग",
+        events: "आपदा घटनाएँ",
+        surge: "तूफान की लहरें",
+        knowledge: "ज्ञान भंडार",
+        ready: "आपदा तैयार",
+        rights: "सर्वाधिकार सुरक्षित।",
+        privacy: "गोपनीयता नीति",
+        terms: "सेवा की शर्तें",
+        media: "मीडिया अपलोड"
+      },
+      gu: { /* Gujarati translations */
+        about: "અમારા વિશે",
+        login: "લૉગિન",
+        title: "ભારતીય મહાસાગર આપત્તિ પ્રારંભિક ચેતવણી સિસ્ટમ",
+        subtitle: "પૃથ્વી વિજ્ઞાન મંત્રાલય - ભારત સરકાર",
+        home: "હોમ",
+        monitoring: "રીઅલ-ટાઇમ ડેટા મોનિટરિંગ",
+        events: "આપત્તિ ઘટનાઓ",
+        surge: "વાવાઝોડાની ભરતી",
+        knowledge: "જ્ઞાન બેંક",
+        ready: "આપત્તિ માટે તૈયાર",
+        rights: "બધા હકો સુરક્ષિત.",
+        privacy: "ગોપનીયતા નીતિ",
+        terms: "સેવાની શરતો",
+        media: "મીડિયા અપલોડ"
+      },
+      mr: { /* Marathi translations */
+        about: "आमच्याबद्दल",
+        login: "लॉगिन",
+        title: "हिंदी महासागर आपत्कालीन पूर्व चेतावणी प्रणाली",
+        subtitle: "पृथ्वी विज्ञान मंत्रालय - भारत सरकार",
+        home: "मुख्यपृष्ठ",
+        monitoring: "रिअल-टाइम डेटा मॉनिटरिंग",
+        events: "आपत्ती घटना",
+        surge: "वादळी लाटा",
+        knowledge: "ज्ञान बँक",
+        ready: "आपत्ती सज्ज",
+        rights: "सर्व हक्क राखीव.",
+        privacy: "गोपनीयता धोरण",
+        terms: "सेवा अटी",
+        media: "मीडिया अपलोड"
+      },
+      bn: { /* Bengali translations */
+        about: "আমাদের সম্পর্কে",
+        login: "লগইন",
+        title: "ভারত মহাসাগর দুর্যোগ প্রাথমিক সতর্কতা ব্যবস্থা",
+        subtitle: "ভূবিজ্ঞান মন্ত্রক - ভারত সরকার",
+        home: "হোম",
+        monitoring: "রিয়েল-টাইম ডেটা পর্যবেক্ষণ",
+        events: "দুর্যোগের ঘটনা",
+        surge: "ঝড় জলোচ্ছ্বাস",
+        knowledge: "জ্ঞান ভাণ্ডার",
+        ready: "দুর্যোগ প্রস্তুতি",
+        rights: "সর্বস্বত্ব সংরক্ষিত।",
+        privacy: "গোপনীয়তা নীতি",
+        terms: "পরিষেবার শর্তাবলী",
+        media: "মিডিয়া আপলোড"
+      },
+      or: { /* Odia translations */
+        about: "ଆମ ବିଷୟରେ",
+        login: "ଲଗଇନ୍",
+        title: "ଭାରତ ମହାସାଗରୀୟ ବିପର୍ଯ୍ୟୟ ପ୍ରାକୃତିକ ସୂଚନା ବ୍ୟବସ୍ଥା",
+        subtitle: "ପୃଥିବୀ ବିଜ୍ଞାନ ମନ୍ତ୍ରଣାଳୟ - ଭାରତ ସରକାର",
+        home: "ହୋମ୍",
+        monitoring: "ରିଅଲ୍-ଟାଇମ୍ ଡାଟା ମନିଟରିଂ",
+        events: "ବିପର୍ଯ୍ୟୟ ଘଟଣା",
+        surge: "ଝଡ଼ ଜୁଆର",
+        knowledge: "ଜ୍ଞାନ ବ୍ୟାଙ୍କ",
+        ready: "ବିପର୍ଯ୍ୟୟ ପ୍ରସ୍ତୁତ",
+        rights: "ସମସ୍ତ ଅଧିକାର ସଂରକ୍ଷିତ।",
+        privacy: "ଗୋପନୀୟତା ନୀତି",
+        terms: "ସେବା ସର୍ତ୍ତାବଳୀ",
+        media: "ମିଡିଆ ଅପଲୋଡ୍"
+      },
+      ta: { /* Tamil translations */
+        about: "எங்களைப் பற்றி",
+        login: "உள்நுழை",
+        title: "இந்தியப் பெருங்கடல் பேரிடர் முன்னறிவிப்பு அமைப்பு",
+        subtitle: "புவி அறிவியல் அமைச்சகம் - இந்திய அரசு",
+        home: "முகப்பு",
+        monitoring: "நிகழ்நேர தரவு கண்காணிப்பு",
+        events: "பேரிடர் நிகழ்வுகள்",
+        surge: "புயல் அலை",
+        knowledge: "அறிவு வங்கி",
+        ready: "பேரிடர் தயார்",
+        rights: "அனைத்து உரிமைகளும் பாதுகாக்கப்பட்டவை.",
+        privacy: "தனியுரிமைக் கொள்கை",
+        terms: "சேவை விதிமுறைகள்",
+        media: "ஊடகப் பதிவேற்றம்"
+      },
+      te: { /* Telugu translations */
+        about: "మా గురించి",
+        login: "లాగిన్",
+        title: "హిందూ మహాసముద్ర విపత్తు ముందస్తు హెచ్చరిక వ్యవస్థ",
+        subtitle: "భూ విజ్ఞాన మంత్రిత్వ శాఖ - భారత ప్రభుత్వం",
+        home: "హోమ్",
+        monitoring: "రియల్-టైమ్ డేటా పర్యవేక్షణ",
+        events: "విపత్తు సంఘటనలు",
+        surge: "తుఫాను ఉప్పెన",
+        knowledge: "జ్ఞాన నిధి",
+        ready: "విపత్తుకు సిద్ధంగా",
+        rights: "అన్ని హక్కులు రిజర్వ్ చేయబడ్డాయి.",
+        privacy: "గోప్యతా విధానం",
+        terms: "సేవా నిబంధనలు",
+        media: "మీడియా అప్‌లోడ్"
+      },
+      kn: { /* Kannada translations */
+        about: "ನಮ್ಮ ಬಗ್ಗೆ",
+        login: "ಲಾಗಿನ್",
+        title: "ಹಿಂದೂ ಮಹಾಸಾಗರ ವಿಪತ್ತು ಮುಂಚಿತ ಎಚ್ಚರಿಕೆ ವ್ಯವಸ್ಥೆ",
+        subtitle: "ಭೂ ವಿಜ್ಞಾನ ಸಚಿವಾಲಯ - ಭಾರತ ಸರ್ಕಾರ",
+        home: "ಮುಖಪುಟ",
+        monitoring: "ನೈಜ-ಸಮಯದ ಡೇಟಾ ಮಾನಿಟರಿಂಗ್",
+        events: "ವಿಪತ್ತು ಘಟನೆಗಳು",
+        surge: "ಚಂಡಮಾರುತದ ಉಬ್ಬರ",
+        knowledge: "ಜ್ಞಾನ ಬ್ಯಾಂಕ್",
+        ready: "ವಿಪತ್ತು ಸಿದ್ಧತೆ",
+        rights: "ಎಲ್ಲಾ ಹಕ್ಕುಗಳನ್ನು ಕಾಯ್ದಿರಿಸಲಾಗಿದೆ.",
+        privacy: "ಗೌಪ್ಯತಾ ನೀತಿ",
+        terms: "ಸೇವಾ ನಿಯಮಗಳು",
+        media: "ಮಾಧ್ಯಮ ಅಪ್ಲೋಡ್"
+      },
+      ml: { /* Malayalam translations */
+        about: "ഞങ്ങളെക്കുറിച്ച്",
+        login: "ലോഗിൻ",
+        title: "ഇന്ത്യൻ മഹാസമുദ്ര ദുരന്ത മുന്നറിയിപ്പ് സംവിധാനം",
+        subtitle: "ഭൂമിശാസ്ത്ര മന്ത്രാലയം - ഇന്ത്യൻ സർക്കാർ",
+        home: "ഹോം",
+        monitoring: "തത്സമയ ഡാറ്റ നിരീക്ഷണം",
+        events: "ദുരന്ത സംഭവങ്ങൾ",
+        surge: "ചുഴലിക്കാറ്റ് തിരമാല",
+        knowledge: "വിജ്ഞാന ശേഖരം",
+        ready: "ദുരന്തത്തിന് തയ്യാർ",
+        rights: "എല്ലാ അവകാശങ്ങളും നിക്ഷിപ്തം.",
+        privacy: "സ്വകാര്യതാ നയം",
+        terms: "സേവന നിബന്ധനകൾ",
+        media: "മീഡിയ അപ്‌ലോഡ്"
+      }
+    };
+
+    function changeLanguage(lang) {
+      const elements = document.querySelectorAll("[data-translate]");
+      elements.forEach(el => {
+        const key = el.getAttribute("data-translate");
+        if (translations[lang] && translations[lang][key]) {
+          el.textContent = translations[lang][key];
+        }
+      });
+      localStorage.setItem("selectedLanguage", lang);
+    }
+
+    window.onload = function() {
+      const savedLang = localStorage.getItem("selectedLanguage") || "en";
+      document.getElementById("language").value = savedLang;
+      changeLanguage(savedLang);
+    };
+  </script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+

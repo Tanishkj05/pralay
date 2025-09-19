@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PRALAY - Login</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Arial', sans-serif;
+    }
+
+    body {
+      display: flex;
+      height: 100vh;
+      background: #f5f7fa;
+    }
+
+    /* Left Side - Branding */
+    .left-panel {
+      flex: 1;
+      background: linear-gradient(135deg, #0077b6, #023e8a);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 40px;
+      text-align: center;
+      position: relative;
+    }
+
+    .left-panel img {
+      height: 70px;
+      margin-bottom: 20px;
+    }
+
+    .left-panel h1 {
+      font-size: 36px;
+      margin-bottom: 15px;
+    }
+
+    .left-panel p {
+      font-size: 16px;
+      max-width: 400px;
+      line-height: 1.6;
+    }
+
+    .left-panel footer {
+      position: absolute;
+      bottom: 20px;
+      font-size: 12px;
+      opacity: 0.8;
+    }
+
+    /* Right Side - Login Form */
+    .right-panel {
+      flex: 1;
+      background: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px;
+    }
+
+    .login-box {
+      width: 100%;
+      max-width: 380px;
+      background: #fff;
+      padding: 25px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .login-box h2 {
+      font-size: 24px;
+      margin-bottom: 10px;
+      color: #333;
+      text-align: center;
+    }
+
+    .login-box p {
+      font-size: 14px;
+      margin-bottom: 20px;
+      color: #666;
+      text-align: center;
+    }
+
+    .login-box p a {
+      color: #0077b6;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .login-box p a:hover {
+      text-decoration: underline;
+    }
+
+    /* Input Fields */
+    .input-field,
+    .select-field {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 14px;
+      background: #fff;
+    }
+
+    /* Login Button */
+    .login-btn {
+      width: 100%;
+      padding: 12px;
+      background: #0077b6;
+      color: white;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: 0.3s;
+    }
+
+    .login-btn:hover {
+      background: #005f8a;
+    }
+
+    /* Google Button */
+    .google-btn {
+      width: 100%;
+      padding: 12px;
+      background: white;
+      border: 1px solid #ccc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 10px;
+      font-size: 14px;
+      transition: 0.3s;
+    }
+
+    .google-btn:hover {
+      background: #f0f0f0;
+    }
+
+    .google-btn img {
+      height: 20px;
+      margin-right: 8px;
+    }
+
+    /* Forgot Password */
+    .forgot-password {
+      text-align: center;
+      margin-top: 15px;
+      font-size: 14px;
+    }
+
+    .forgot-password a {
+      color: #0077b6;
+      text-decoration: none;
+    }
+
+    .forgot-password a:hover {
+      text-decoration: underline;
+    }
+
+    /* Admin Type Dropdown Hidden Initially */
+    .admin-type {
+      display: none;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      body {
+        flex-direction: column;
+      }
+      .left-panel, .right-panel {
+        flex: none;
+        width: 100%;
+        text-align: center;
+        padding: 20px;
+      }
+      .left-panel footer {
+        position: static;
+        margin-top: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Left Branding Section -->
+  <div class="left-panel">
+    <img src="images/your_logo.png" alt="PRALAY Logo">
+    <h1>Welcome to PRALAY 🌊</h1>
+    <p>Stay prepared and stay safe!  
+      Get real-time alerts and updates about ocean-related disasters like tsunamis, cyclones, and storm surges.</p>
+    <footer>&copy; 2025 PRALAY. All rights reserved.</footer>
+  </div>
+
+  <!-- Right Login Section -->
+  <div class="right-panel">
+    <div class="login-box">
+      <h2>Welcome Back!</h2>
+      <p>Don't have an account? <a href="signup.html">Create one now</a>, it's free!</p>
+
+      <form>
+        <!-- User Type Selection -->
+        <select id="userType" class="select-field" required>
+          <option value="" disabled selected>Select User Type</option>
+          <option value="normal">Normal User</option>
+          <option value="admin">Admin</option>
+        </select>
+
+        <!-- Admin Type Dropdown (Hidden by default) -->
+        <select id="adminType" class="select-field admin-type">
+          <option value="" disabled selected>Select Admin Type</option>
+          <option value="govt">Government Official</option>
+          <option value="system-manager">PRALAY System Manager</option>
+          <option value="researcher">Researcher / Analyst</option>
+        </select>
+
+        <!-- Email -->
+        <input type="email" class="input-field" placeholder="Email Address" required>
+
+        <!-- Password -->
+        <input type="password" class="input-field" placeholder="Password" required>
+
+        <!-- Login Button -->
+        <button type="submit" class="login-btn">Login Now</button>
+
+        <!-- Google Login -->
+        <div class="google-btn">
+          <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google Logo">
+          Login with Google
+        </div>
+
+        <!-- Forgot Password -->
+        <div class="forgot-password">
+          <a href="forgot-password.html">Forgot password? Click here</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // Show or hide Admin Type dropdown based on selected user type
+    const userTypeSelect = document.getElementById('userType');
+    const adminTypeSelect = document.getElementById('adminType');
+
+    userTypeSelect.addEventListener('change', function() {
+      if (this.value === 'admin') {
+        adminTypeSelect.style.display = 'block';
+        adminTypeSelect.setAttribute('required', 'true');
+      } else {
+        adminTypeSelect.style.display = 'none';
+        adminTypeSelect.removeAttribute('required');
+      }
+    });
+  </script>
+
+</body>
+</html>
+

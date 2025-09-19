@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Us - PRALAY</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f8fbff;
+      color: #003366;
+      overflow-x: hidden;
+    }
+
+    /* Smooth Scrolling */
+    html {
+      scroll-behavior: smooth;
+    }
+
+    /* Animation Keyframes */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideInLeft {
+      from { opacity: 0; transform: translateX(-50px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes slideInRight {
+      from { opacity: 0; transform: translateX(50px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    /* Fade-in animation utility */
+    .fade-in {
+      opacity: 0;
+      transition: opacity 1s ease, transform 1s ease;
+    }
+
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Hero Section */
+    .hero {
+      position: relative;
+      height: 100vh;
+      background: url('images/ocean-bg.jpg') no-repeat center center/cover;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      color: #fff;
+      overflow: hidden;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 51, 102, 0.6);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      animation: fadeIn 2s ease-in-out;
+    }
+
+    .hero h1 {
+      font-size: 3rem;
+      letter-spacing: 2px;
+      margin-bottom: 10px;
+    }
+
+    .hero h1 span {
+      color: #4db8ff;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      max-width: 650px;
+      margin: 0 auto;
+      opacity: 0.9;
+    }
+
+    /* Section Styling */
+    section {
+      padding: 80px 20px;
+      max-width: 1100px;
+      margin: auto;
+      position: relative;
+    }
+
+    section h2 {
+      text-align: center;
+      font-size: 2rem;
+      margin-bottom: 20px;
+      color: #003366;
+    }
+
+    section p {
+      text-align: center;
+      font-size: 1rem;
+      color: #333;
+      line-height: 1.8;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    /* Mission Section */
+    .mission {
+      text-align: center;
+      background: #e6f2ff;
+      border-radius: 10px;
+      padding: 50px 30px;
+      margin-bottom: 60px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      animation: fadeIn 1.5s ease-in-out;
+    }
+
+    /* Feature Grid */
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+      margin-top: 40px;
+    }
+
+    .feature-card {
+      background: #ffffff;
+      padding: 30px 20px;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .feature-card.visible {
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+    }
+
+    .feature-card img {
+      width: 60px;
+      margin-bottom: 15px;
+    }
+
+    .feature-card h4 {
+      color: #004080;
+      margin-bottom: 10px;
+      font-size: 1.2rem;
+    }
+
+    .feature-card p {
+      color: #555;
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    /* Image & Text Split Section */
+    .split-section {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 40px;
+      align-items: center;
+      margin-top: 80px;
+    }
+
+    .split-section img {
+      flex: 1;
+      max-width: 500px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      opacity: 0;
+      transform: translateX(-50px);
+      transition: all 0.8s ease;
+    }
+
+    .split-section img.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .split-text {
+      flex: 1;
+      min-width: 280px;
+      opacity: 0;
+      transform: translateX(50px);
+      transition: all 0.8s ease;
+    }
+
+    .split-text.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .split-text h3 {
+      color: #004080;
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+    }
+
+    .split-text p {
+      color: #333;
+      font-size: 1rem;
+      line-height: 1.7;
+    }
+
+    /* Call to Action */
+    .cta {
+      text-align: center;
+      background: linear-gradient(90deg, #0073e6, #3399ff);
+      padding: 50px 20px;
+      border-radius: 10px;
+      margin-top: 80px;
+      color: white;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 1s ease, transform 1s ease;
+    }
+
+    .cta.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .cta h2 {
+      font-size: 2rem;
+      margin-bottom: 15px;
+    }
+
+    .cta p {
+      font-size: 1.1rem;
+      margin-bottom: 25px;
+    }
+
+    .cta a {
+      background: #fff;
+      color: #0073e6;
+      padding: 12px 30px;
+      font-size: 1rem;
+      text-decoration: none;
+      border-radius: 5px;
+      transition: background 0.3s ease;
+    }
+
+    .cta a:hover {
+      background: #f2f2f2;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 20px;
+      margin-top: 40px;
+      background: #003366;
+      color: #fff;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 2.2rem;
+      }
+      .split-section {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Hero Section -->
+  <div class="hero">
+    <div class="hero-content">
+      <h1>From <span>OCEAN</span> to Safety</h1>
+      <p>Empowering communities to respond to ocean hazards with technology and collaboration</p>
+    </div>
+  </div>
+
+  <!-- Mission Section -->
+  <section class="mission fade-in">
+    <h2>Our Mission</h2>
+    <p>PRALAY was created to empower communities and authorities to respond to ocean-related hazards effectively. By combining citizen reports and AI-powered insights, we provide real-time information that can save lives and protect livelihoods.</p>
+  </section>
+
+  <!-- Split Section (Why We Built PRALAY) -->
+  <section class="split-section">
+    <img src="about.png" alt="Coastal Safety">
+    <div class="split-text">
+      <h3>Why We Built PRALAY</h3>
+      <p>
+        PRALAY bridges the gap between citizens and authorities by enabling easy, geo-tagged hazard reporting — even offline.  
+        <br><br>
+        Through our interactive dashboard, disaster management teams gain actionable intelligence from both crowdsourced reports and AI-driven social media analysis, helping them respond faster and smarter.
+      </p>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section>
+    <h2>What Makes PRALAY Unique</h2>
+    <div class="features">
+      <div class="feature-card">
+        <h4>Easy Hazard Reporting</h4>
+        <p>Citizens can report hazards with geo-tagged photos, videos, and descriptions, even in offline mode.</p>
+      </div>
+      <div class="feature-card">
+        <h4>Real-Time Dashboard</h4>
+        <p>Authorities get a centralized dashboard to monitor hazards and take immediate action.</p>
+      </div>
+      <div class="feature-card">
+        <h4>AI-Powered Insights</h4>
+        <p>We use AI to analyze social media and crowdsourced reports for early disaster detection.</p>
+      </div>
+      <div class="feature-card">
+        <h4>Community Collaboration</h4>
+        <p>Connecting people and officials to build a stronger disaster response network.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Call to Action -->
+  <section class="cta">
+    <h2>Join Us in Building Safer Shores</h2>
+    <p>Be part of our mission to protect lives and livelihoods. Stay informed and take action when it matters most.</p>
+    <a href="signup.html">Get Started</a>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    &copy; 2025 PRALAY. All rights reserved.
+  </footer>
+
+  <!-- Scroll Animation Script -->
+  <script>
+    document.addEventListener("scroll", function() {
+      const fadeElements = document.querySelectorAll('.fade-in, .feature-card, .split-section img, .split-text, .cta');
+
+      fadeElements.forEach(el => {
+        const rect = el.getBoundingClientRect();
+        if (rect.top < window.innerHeight - 100) {
+          el.classList.add('visible');
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>
+
+

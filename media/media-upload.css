@@ -1,0 +1,116 @@
+/* General Styling */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  background: #f4f6f8;
+  color: #333;
+}
+
+/* Header */
+.header {
+  text-align: center;
+  background: linear-gradient(90deg, #023e8a, #0077b6);
+  color: white;
+  padding: 20px;
+}
+
+.header h1 {
+  margin: 0;
+}
+
+.header p {
+  margin: 5px 0 0;
+  font-size: 14px;
+}
+
+/* Form Container */
+.form-container {
+  max-width: 500px;
+  background: white;
+  margin: 30px auto;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+textarea, input[type="file"], input[type="text"], button {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 15px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+
+textarea {
+  height: 80px;
+  resize: none;
+}
+
+/* Location Box */
+.location-box {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.location-box input {
+  width: calc(50% - 4px);
+}
+
+.location-box button {
+  background: #0077b6;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.location-box button:hover {
+  background: #023e8a;
+}
+
+/* Preview Box */
+#preview {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+#preview img, #preview video {
+  max-width: 100%;
+  border-radius: 8px;
+  margin-top: 8px;
+  box-shadow: 0px 2px 6px rgba(0,0,0,0.2);
+}
+
+/* Submit Button */
+.submit-btn {
+  background: #0077b6;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.submit-btn:hover {
+  background: #023e8a;
+}
+
+/* Success Message */
+.success-message {
+  text-align: center;
+  background: #d4edda;
+  color: #155724;
+  padding: 10px;
+  margin: 20px auto;
+  max-width: 500px;
+  border: 1px solid #c3e6cb;
+  border-radius: 5px;
+}

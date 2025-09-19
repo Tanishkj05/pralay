@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PRALAY - Report Ocean Hazard</title>
+  <link rel="stylesheet" href="media-upload.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <h1>🌊 PRALAY - Report Ocean Hazard</h1>
+    <p>Help us monitor ocean hazards by reporting incidents with photos or videos.</p>
+  </header>
+
+  <!-- Upload Form -->
+  <div class="form-container">
+    <form id="hazardForm">
+
+      <!-- Description -->
+      <label for="description">Hazard Description:</label>
+      <textarea id="description" name="description" placeholder="Describe the hazard (e.g., high waves, oil spill, tsunami signs)" required></textarea>
+
+      <!-- File Upload -->
+      <label for="media">Upload Photo or Video:</label>
+      <input type="file" id="media" name="media" accept="image/*,video/*" required>
+      <div id="preview"></div>
+
+      <!-- Location -->
+      <label>Location:</label>
+      <div class="location-box">
+        <input type="text" id="latitude" name="latitude" placeholder="Latitude" readonly required>
+        <input type="text" id="longitude" name="longitude" placeholder="Longitude" readonly required>
+        <button type="button" onclick="getLocation()">📍 Get Location</button>
+      </div>
+
+      <!-- Submit -->
+      <button type="submit" class="submit-btn">Submit Report</button>
+    </form>
+  </div>
+
+  <!-- Success Message -->
+  <div id="successMessage" class="success-message" style="display:none;">
+    ✅ Your report has been submitted successfully!
+  </div>
+
+  <script src="media-upload.js"></script>
+</body>
+</html>
